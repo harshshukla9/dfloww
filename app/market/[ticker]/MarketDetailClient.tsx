@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import type { DFlowEvent, MarketAccount } from "@/types/dflow";
-import { ArrowLeft, ExternalLink, Clock, TrendingUp } from "lucide-react";
+import { ArrowLeft, ExternalLink, Clock, TrendingUp, BarChart2 } from "lucide-react";
 import { TradePanel } from "../../components/TradePanel";
 import { WalletButton } from "../../components/WalletButton";
+import { PriceChart } from "../../components/PriceChart";
 
 interface Props {
     event: DFlowEvent;
@@ -133,6 +134,51 @@ export function MarketDetailClient({ event }: Props) {
                     </span>
                 </div>
             </div>
+
+            {/* Price Chart */}
+            {event.markets?.[0] && (() => {
+                const m = event.markets[0];
+                const yesPrice = parseFloat(m.yesAsk || m.yesBid || "0.5");
+                return (
+                    <div style={{ marginBottom: 24 }}>
+                        <PriceChart
+                            yesPrice={yesPrice}
+                            openTime={m.openTime}
+                            closeTime={m.closeTime}
+                            title={m.title}
+                        />
+                        {/* Volume & Open Interest bar */}
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: 24,
+                                marginTop: 12,
+                                fontSize: 13,
+                                color: "var(--text-muted)",
+                            }}
+                        >
+                            {m.volume ? (
+                                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                                    <BarChart2 size={14} style={{ color: "var(--blue)" }} />
+                                    <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
+                                        ${(m.volume / 1_000_000).toFixed(1)}M
+                                    </span>
+                                    volume
+                                </div>
+                            ) : null}
+                            {m.openInterest ? (
+                                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                                    <TrendingUp size={14} style={{ color: "var(--green)" }} />
+                                    <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
+                                        ${(m.openInterest / 1_000_000).toFixed(1)}M
+                                    </span>
+                                    open interest
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+                );
+            })()}
 
             {/* Markets */}
             <div

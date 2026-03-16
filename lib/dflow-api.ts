@@ -36,7 +36,15 @@ async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
         next: { revalidate: 30 }, // ISR: revalidate every 30s
     });
     if (!res.ok) {
-        throw new Error(`dFlow API error ${res.status}: ${await res.text()}`);
+        const text = await res.text();
+        let errMsg = `dFlow API error ${res.status}`;
+        try {
+            const errJson = JSON.parse(text);
+            errMsg = errJson.msg || errJson.message || errJson.error || errMsg;
+        } catch {
+            if (text) errMsg += `: ${text.slice(0, 200)}`;
+        }
+        throw new Error(errMsg);
     }
     return res.json() as Promise<T>;
 }

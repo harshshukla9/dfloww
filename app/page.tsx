@@ -34,8 +34,8 @@ export default function MarketsPage() {
         if (statusFilter === "settled") statusParam = "finalized";
 
         const url = statusParam
-          ? `/api/markets?status=${statusParam}&limit=200`
-          : `/api/markets?limit=200`;
+          ? `/api/markets?status=${statusParam}&limit=50`
+          : `/api/markets?limit=50`;
 
         const [marketsRes, categoriesRes] = await Promise.all([
           fetch(url),
@@ -49,7 +49,7 @@ export default function MarketsPage() {
 
         // For "settled", also fetch determined markets and merge
         if (statusFilter === "settled") {
-          const detRes = await fetch("/api/markets?status=determined&limit=200");
+          const detRes = await fetch("/api/markets?status=determined&limit=50");
           if (detRes.ok) {
             const detData = await detRes.json();
             fetchedEvents = [...fetchedEvents, ...(detData.events || [])];
