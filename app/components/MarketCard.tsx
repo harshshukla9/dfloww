@@ -48,12 +48,14 @@ function getMarketPrices(market: DFlowMarket) {
     return { yesPrice, noPrice };
 }
 
-/** Format volume */
-function formatVolume(vol: number | undefined): string {
-    if (!vol) return "";
-    if (vol >= 1_000_000) return `$${(vol / 1_000_000).toFixed(1)}M`;
-    if (vol >= 1_000) return `$${(vol / 1_000).toFixed(0)}K`;
-    return `$${vol}`;
+/** Format volume (dFlow returns volume in cents, convert to dollars) */
+function formatVolume(volInCents: number | undefined): string {
+    if (!volInCents) return "";
+    const dollars = volInCents / 100;
+    if (dollars >= 1_000_000) return `$${(dollars / 1_000_000).toFixed(1)}M`;
+    if (dollars >= 1_000) return `$${(dollars / 1_000).toFixed(0)}K`;
+    if (dollars >= 1) return `$${dollars.toFixed(0)}`;
+    return `$${dollars.toFixed(2)}`;
 }
 
 export function MarketCard({ event, index }: MarketCardProps) {

@@ -54,6 +54,15 @@ export interface DFlowEvent {
   mutuallyExclusive?: boolean;
   endDate?: string;
   image?: string;
+  imageUrl?: string;
+  /** Volume in cents */
+  volume?: number;
+  volume24h?: number;
+  openInterest?: number;
+  liquidity?: number;
+  volumeFp?: string;
+  volume24hFp?: string;
+  openInterestFp?: string;
 }
 
 /** A series grouping related events (e.g. "Bitcoin Price") */
